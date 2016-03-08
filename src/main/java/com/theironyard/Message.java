@@ -1,8 +1,6 @@
 package com.theironyard;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by PiratePowWow on 3/8/16.
@@ -13,9 +11,15 @@ public class Message {
     @GeneratedValue
     int id;
 
-    int userId;
+    @ManyToOne
+    User user;
 
     String text;
+
+    public Message(User user, String text) {
+        this.user = user;
+        this.text = text;
+    }
 
     public Message(String text) {
         this.text = text;
@@ -23,5 +27,21 @@ public class Message {
 
     public Message(){
 
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

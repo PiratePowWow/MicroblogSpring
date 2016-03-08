@@ -1,23 +1,28 @@
 <html>
 <body>
-{{#name}}Hello, {{name}}!{{/name}}
+{{#user}}Hello, {{name}}!{{/user}}
 
-{{^name}}
+{{^user}}
 <form action="/login" method="post">
     <input type="text" placeholder="Enter Your Name" name="userName"/>
     <button type="submit">Login</button>
 </form>
-{{/name}}
-{{#name}}
+{{/user}}
+{{#user}}
 <form action="/add-message" method="post">
     <input type="text" placeholder="Enter A Message" name="text">
     <button type="submit">Submit</button>
 </form>
-{{/name}}
+{{/user}}
 
 <ol>
     {{#messages}}
-    <li>{{.}} <form action="/delete-message" method="post"><input type="hidden" name="message" value="{{.}}"><button type="submit">DELETE</button></form></li>
+    <li>{{text}} <form action="/delete-message" method="post"><input type="hidden" name="message" value="{{id}}"><button type="submit">DELETE</button></form></li>
+    <div><form action="/change-message" method="post">
+        <input type="text" placeholder="Change This Message" name="changeMessage"/>
+        <input type="hidden" name="id" value="{{id}}">
+        <button type="submit">Change Message</button>
+    </form></div>
     {{/messages}}
 </ol>
 

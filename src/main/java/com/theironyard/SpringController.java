@@ -20,29 +20,32 @@ public class SpringController {
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(HttpSession session, String userName){
-        session.setAttribute("userName", MicroblogSpringApplication.userMap.get(userName));
+        session.setAttribute("user", users.findByName(userName));
         return "redirect:/";
     }
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String home(Model model, HttpSession session){
-        model.addAttribute("name", session.getAttribute("userName"));
+        if (session.getAttribute("user")!= null ){
+            model.addAttribute("messages", messages.findByUser((User) session.getAttribute("user")));
+            model.addAttribute("user", session.getAttribute("user"));
+        }
         return "home";
     }
     @RequestMapping(path = "/add-message", method = RequestMethod.POST)
-    public String addMessage(Model model, HttpSession session, String text) {
-        User user = (User) session.getAttribute("userName");
-        MicroblogSpringApplication.userMap.get(user.getName()).messages.add(text);
-        model.addAttribute("messages", MicroblogSpringApplication.userMap.get(user.getName()).messages);
-        model.addAttribute("name", session.getAttribute("userName"));
-        return "home";
+    public String addMessage(HttpSession session, String text) {
+        messages.save(new Message((User) session.getAttribute("user"),text));
+        return "redirect:/";
     }
     @RequestMapping(path = "/delete-message", method = RequestMethod.POST)
-    public String deleteMessage(Model model, HttpSession session, String message) {
-        User user = (User) session.getAttribute("userName");
-        model.addAttribute("name", session.getAttribute("userName"));
-        int index = MicroblogSpringApplication.userMap.get(user.getName()).messages.indexOf(message);
-        MicroblogSpringApplication.userMap.get(user.getName()).messages.remove(index);
-        model.addAttribute("messages", MicroblogSpringApplication.userMap.get(user.getName()).messages);
-        return "home";
+    public String deleteMessage(int message) {
+        messages.delete(message);
+        return "redirect:/";
+    }
+    @RequestMapping(path = "/change-message", method = RequestMethod.POST)
+    public String changeMessage(int id, String changeMessage){
+        Message message = messages.findOne(id);
+        message.setText(changeMessage);
+        messages.save(message);
+        return "redirect:/";
     }
 }
